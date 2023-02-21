@@ -5,10 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
 namespace Logistic.ConsoleClient
 {
+    
     internal class Vehicle
     {
+        private const double CONVERT_TO_POUNDS = 2.20462;
+        protected int totalWeight;
+        protected double totalVolume;
         public VehicleType Type { get; set; }
         public string Number { get; set; }
         public int MaxCargoWeightKg { get; set; }
@@ -22,21 +27,19 @@ namespace Logistic.ConsoleClient
         {
             this.MaxCargoWeightKg = MaxCargoWeightKg;
             this.MaxCargoVolume = MaxCargoVolum;
-            MaxCargoWeightPnd = MaxCargoWeightKg * 2.2046;
+            MaxCargoWeightPnd = MaxCargoWeightKg * CONVERT_TO_POUNDS;
             Cargos = new List<Cargo>();
          }
         public string GetCargoVolumeLeft()
         {
-            double totalVolume = Cargos.Sum(v => v.Volume);
             double volumLeft = MaxCargoVolume - totalVolume;
             return $"Left to load by volume: {volumLeft} m3";
         }
 
         public string GetCargoWeightLeft(WeightUnit weightUnit)
-        {
-            double totalWeight = Cargos.Sum(s => s.Weight);
+        {      
             double weightLeft = MaxCargoWeightKg - totalWeight;
-            double weightLeftPnd = MaxCargoWeightPnd - totalWeight * 2.2046;
+            double weightLeftPnd = MaxCargoWeightPnd - totalWeight * CONVERT_TO_POUNDS;
             if (WeightUnit.Kilograms == weightUnit)
             {
                 return $"Left to load by volume: {weightLeft} kg";
@@ -49,16 +52,15 @@ namespace Logistic.ConsoleClient
         }
         public string GetInformation()
         {
-            return $"Info about {Type} with number: {Number} /// max load: weight {MaxCargoWeightKg} kg / {MaxCargoWeightPnd} lb,  volume {MaxCargoVolume} m3 //// Cargos count {Cargos.Count}pcs, cargos weight: {Cargos.Sum(s=> s.Weight)}kg/{Cargos.Sum(s => s.Weight)* 2.2046}lb, cargos volume: {Cargos.Sum(v => v.Volume)}m3";
+            return $"Info about {Type} with number: {Number} /// max load: weight {MaxCargoWeightKg} kg / {MaxCargoWeightPnd} lb,  volume {MaxCargoVolume} m3 //// Cargos count {Cargos.Count}pcs, cargos weight: {totalWeight}kg/{totalWeight * CONVERT_TO_POUNDS}lb, cargos volume: {totalVolume}m3";
         }
-        
 
         public void LoadCargo(Cargo cargo)
         {
 
             Cargos.Add(cargo);
-            int totalWeight = 0;
-            double totalVolume = 0;
+            totalWeight = 0;
+            totalVolume = 0;
 
             foreach (var i in Cargos) {
                 if (i.Weight > MaxCargoWeightKg)
