@@ -58,30 +58,25 @@ namespace Logistic.ConsoleClient
         public void LoadCargo(Cargo cargo)
         {
 
-            Cargos.Add(cargo);
-            totalWeight = 0;
-            totalVolume = 0;
-
-            foreach (var i in Cargos) {
-                if (i.Weight > MaxCargoWeightKg)
+                if (cargo.Weight > MaxCargoWeightKg)
                 {
-                    throw new Exception($"Cargo weight  {i.Code} is too much: {i.Weight} kg");
+                    throw new Exception($"Cargo weight  {cargo.Code} is too much: {cargo.Weight} kg");
                 }
-                if (i.Volume > MaxCargoVolume)
+                if (cargo.Volume > MaxCargoVolume)
                 {
-                    throw new Exception($"Cargo volume {i.Code} is too much {i.Volume} m3");
+                    throw new Exception($"Cargo volume {cargo.Code} is too much {cargo.Volume} m3");
                 }
-                totalWeight += i.Weight;
-                totalVolume += i.Volume;
-                if (totalWeight > MaxCargoWeightKg)
+                totalWeight += cargo.Weight;
+                totalVolume += cargo.Volume;
+               if (totalWeight > MaxCargoWeightKg)
                 {
-                    throw new Exception($"Vehile is overloaded: cargo {i.Code} //weight {i.Weight} kg");
+                    throw new Exception($"Vehile is overloaded: cargo {cargo.Code} //weight {cargo.Weight} kg");
                 }
                 if (totalVolume > MaxCargoVolume)
                 {
-                    throw new Exception($"Cargos don`t fit by volume: cargo {i.Code}//volume {i.Volume} m3");
-                }              
-            }
+                    throw new Exception($"Cargos don`t fit by volume: cargo {cargo.Code}//volume {cargo.Volume} m3");
+                }
+            Cargos.Add(cargo);
         }        
     }
     public enum VehicleType
