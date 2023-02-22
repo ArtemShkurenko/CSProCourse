@@ -58,24 +58,17 @@ namespace Logistic.ConsoleClient
         public void LoadCargo(Cargo cargo)
         {
 
-                if (cargo.Weight > MaxCargoWeightKg)
-                {
-                    throw new Exception($"Cargo weight  {cargo.Code} is too much: {cargo.Weight} kg");
-                }
-                if (cargo.Volume > MaxCargoVolume)
-                {
-                    throw new Exception($"Cargo volume {cargo.Code} is too much {cargo.Volume} m3");
-                }
-                totalWeight += cargo.Weight;
-                totalVolume += cargo.Volume;
-               if (totalWeight > MaxCargoWeightKg)
+ 
+               if (totalWeight + cargo.Weight> MaxCargoWeightKg)
                 {
                     throw new Exception($"Vehile is overloaded: cargo {cargo.Code} //weight {cargo.Weight} kg");
                 }
-                if (totalVolume > MaxCargoVolume)
+                if (totalVolume + cargo.Volume > MaxCargoVolume)
                 {
                     throw new Exception($"Cargos don`t fit by volume: cargo {cargo.Code}//volume {cargo.Volume} m3");
                 }
+            totalWeight += cargo.Weight;
+            totalVolume += cargo.Volume;
             Cargos.Add(cargo);
         }        
     }
