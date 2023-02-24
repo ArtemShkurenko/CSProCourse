@@ -28,6 +28,12 @@ static void SuccessScenario()
     }
 
     Console.WriteLine(car1.GetInformation());
+
+    foreach (var cargo in cargos1)
+    {
+        Console.WriteLine(cargo.GetInformation());
+    }
+
 }
 
 static void ExceptionScenario()
@@ -51,6 +57,7 @@ foreach (var cargo in cargos1)
     }
 
     Console.WriteLine("\n{car1.GetInformation()}");
+    
 }
 
 

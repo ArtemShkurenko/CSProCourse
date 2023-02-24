@@ -19,7 +19,7 @@ namespace Logistic.ConsoleClient
         }
         public string GetInformation()
         {
-            return $"Code cargo: {Code}, characteristics: volume: {Volume}, weight: {Weight}";
+            return $"Code cargo: {Code}, characteristics: volume: {this.Volume}, weight: {this.Weight}";
         }
     }
 

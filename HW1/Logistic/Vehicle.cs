@@ -52,13 +52,12 @@ namespace Logistic.ConsoleClient
         }
         public string GetInformation()
         {
-            return $"Info about {Type} with number: {Number} /// max load: weight {MaxCargoWeightKg} kg / {MaxCargoWeightPnd} lb,  volume {MaxCargoVolume} m3 //// Cargos count {Cargos.Count}pcs, cargos weight: {totalWeight}kg/{totalWeight * CONVERT_TO_POUNDS}lb, cargos volume: {totalVolume}m3";
+            return $"Info about {Type} with number: {Number} /// max load: weight {MaxCargoWeightKg} kg / {MaxCargoWeightPnd} lb,  volume {MaxCargoVolume} m3 //// Cargos count {Cargos.Count}pcs, cargos weight: {totalWeight}kg/{totalWeight * CONVERT_TO_POUNDS}lb, cargos volume: {totalVolume}m3. Info about load: {GetCargoVolumeLeft()} /// {GetCargoWeightLeft(WeightUnit.Kilograms)} /// {GetCargoWeightLeft(WeightUnit.Pounds)}";
         }
 
         public void LoadCargo(Cargo cargo)
         {
-
- 
+               
                if (totalWeight + cargo.Weight> MaxCargoWeightKg)
                 {
                     throw new Exception($"Vehile is overloaded: cargo {cargo.Code} //weight {cargo.Weight} kg");
