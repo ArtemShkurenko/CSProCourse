@@ -7,12 +7,13 @@ using Logistic.ConsoleClient.Services;
 
 namespace Logistic.ConsoleClient.DataBase
 {
-    internal abstract class InMemoryRepository<TEntity, TId> : IRepository<TEntity,TId>
-        where TEntity : IRecord<TId>, new()
-        where TId : struct, IEquatable<TId>
+    internal /*abstract*/ class InMemoryRepository<TEntity> : IRepository<TEntity>
+        where TEntity : IRecord, new()
+      
     {
         List<TEntity> _records = new List<TEntity>();
-        protected TEntity DeepCopy(TEntity entity)
+        private int idCounter = 1;
+        internal TEntity DeepCopy(TEntity entity)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -23,30 +24,30 @@ namespace Logistic.ConsoleClient.DataBase
             return (copyEntity);
         }
 
-        public TEntity GetRecordById(TId Id)
+        public TEntity GetRecordById(int Id)
         {
             var entity = _records.FirstOrDefault(x => x.Id.Equals(Id));
-            return entity;           
+            return DeepCopy(entity);           
         }
-        public virtual TEntity? Delete(TId Id)
+        public void Delete(int Id)
         {
             var entity = _records.FirstOrDefault(x => x.Id.Equals(Id));
             _records.Remove(DeepCopy(entity));
-            return DeepCopy(entity);
         }
         public void Create(TEntity entity)
         {
             var entityCopy = DeepCopy(entity);
+            entityCopy.Id = idCounter++;
             _records.Add(entityCopy);
         }
-        public virtual TEntity? Update(TEntity newEntity)
+        public void Update(TEntity newEntity)
         {
             var oldEntity = _records.FirstOrDefault(x => x.Id.Equals(newEntity.Id));
-            _records.Remove(oldEntity);
-            _records.Add(newEntity);
-            return DeepCopy(newEntity);
+            _records.Remove(DeepCopy(oldEntity));
+            _records.Add(DeepCopy(newEntity));
+           
         }
-        public virtual IEnumerable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
             return _records.Select(DeepCopy);
         }

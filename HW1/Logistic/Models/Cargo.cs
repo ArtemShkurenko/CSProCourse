@@ -1,22 +1,22 @@
 ﻿using System;
+using System.Xml.Linq;
 
 
 namespace Logistic.ConsoleClient.Models
 {
-    public class Cargo : IRecord<Guid>
+    public class Cargo
     {
         public Guid Id { get; set; }
         public string Code { get; set; }
         public double Volume { get; set; }
         public int Weight { get; set; }
-        
         public Cargo()
         {
             Id = Guid.NewGuid();
         }
-        public string GetInformation()
+        public override string ToString()
         {
-            return $"Code cargo:  characteristics: volume: {Volume}, weight: {Weight}";
+            return $"Info about cargo with ID: {Id} /// weight {Weight} kg /// volume {Volume} m3 ";
         }
     }
 

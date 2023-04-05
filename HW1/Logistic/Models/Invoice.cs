@@ -3,7 +3,7 @@
 
 namespace Logistic.ConsoleClient.Models
 {
-    internal class Invoice : IRecord<Guid>
+    internal class Invoice
     {
         public Guid Id { get; set; }
         public string RecipientAddress { get; set; }

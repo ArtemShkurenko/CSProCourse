@@ -11,61 +11,72 @@ using Logistic.ConsoleClient.CONST;
 
 namespace Logistic.ConsoleClient.Services
 {
-    internal class VehicleService : InMemoryRepository<Vehicle, int>
+    internal class VehicleService
     {
-       
-        private int Id = 0;
-
-        protected Vehicle DeepCopy(Vehicle vehicle)
-        { 
-            return base.DeepCopy(vehicle);
+        private readonly InMemoryRepository<Vehicle> _vehicleRepository;
+        //private readonly InMemoryRepository<Cargo> _cargoRepository;
+        //private int Id = 0;
+        public VehicleService(InMemoryRepository<Vehicle> vehiceleRepository)
+        {
+            _vehicleRepository = vehiceleRepository;
         }
+       /* public Vehicle DeepCopy(Vehicle vehicle)
+        { 
+            return _vehicleRepository.DeepCopy(vehicle);
+        }*/
         
         public void Create(Vehicle vehicle)
         {
-            vehicle.Id = ++Id;
-            base.Create(vehicle);
+           // vehicle.Id = ++Id;
+            _vehicleRepository.Create(vehicle);
         }
   
         public Vehicle GetById(int vehicleId)
         {
-            return base.GetRecordById(vehicleId);
+            return _vehicleRepository.GetRecordById(vehicleId);
         }
 
         public IEnumerable<Vehicle> GetAll()
         {
-            return base.GetAll();
+            return _vehicleRepository.GetAll();
         }
 
-        public Vehicle? Delete(int vehicleId)
+        public void Delete(int vehicleId)
         {
-            return base.Delete(vehicleId);
+           _vehicleRepository.Delete(vehicleId);
         }
 
-        public Vehicle LoadCargo(Cargo cargo, int vehicleId)
+        public void Update (Vehicle vehicle)
         {
-            var vehicle = base.GetRecordById(vehicleId); 
+           _vehicleRepository.Update(vehicle);
+        }
+
+        public void LoadCargo(Cargo cargo, int vehicleId)
+        {
+            var vehicle = _vehicleRepository.GetRecordById(vehicleId);
+            var totalLoadedWeight = vehicle.Cargos.Sum(x => x.Weight);
+            var totalLoadedVolume = vehicle.Cargos.Sum(x => x.Volume);
 
             if (vehicle == null)
             {
                 throw new ArgumentException($"Vehicle with Id {vehicleId} does not exist.");
             }            
-            if (vehicle.totalWeight + cargo.Weight > vehicle.MaxCargoWeightKg)
+            if (totalLoadedWeight > vehicle.MaxCargoWeightKg)
             {
-                    throw new Exception($"Vehile is overloaded: cargo {cargo.Id} //weight {cargo.Weight} kg");
+                throw new Exception($"Vehile is overloaded: cargo {cargo.Id} //weight {cargo.Weight} kg");
             }
-             if (vehicle.totalVolume + cargo.Volume > vehicle.MaxCargoVolume)
-                {
-                    throw new Exception($"Cargos don`t fit by volume: cargo {cargo.Id}//volume {cargo.Volume} m3");
-                }
-              vehicle.totalWeight += cargo.Weight;
-              vehicle.totalVolume += cargo.Volume;
-              vehicle.Cargos.Add(cargo);
-              return base.Update(vehicle);
+            if (totalLoadedVolume > vehicle.MaxCargoVolume)
+            {
+                throw new Exception($"Cargos don`t fit by volume: cargo {cargo.Id}//volume {cargo.Volume} m3");
+            }
+            totalLoadedWeight += cargo.Weight;
+            totalLoadedVolume += cargo.Volume;
+            vehicle.Cargos.Add(cargo);
+            //return _vehicleRepository.Update(vehicle);
         }
-        public Vehicle UnloadCargo(Guid cargoId, int vehicleId)
+        public void UnloadCargo(Guid cargoId, int vehicleId)
         {
-            var vehicle = base.GetRecordById(vehicleId);
+            var vehicle = _vehicleRepository.GetRecordById(vehicleId);
             if (vehicle == null)
             {
                 throw new ArgumentException($"Vehicle with Id {vehicleId} does not exist.");
@@ -76,7 +87,7 @@ namespace Logistic.ConsoleClient.Services
                 throw new ArgumentException($"Cargo with Id {cargoId} does not exist in Vehicle with Id {vehicleId}.");
             }          
             vehicle.Cargos.Remove(cargoToRemove);
-            return base.Update(vehicle);
+           // return _vehicleRepository.Update(vehicle);
         }
 
     }

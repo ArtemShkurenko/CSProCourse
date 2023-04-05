@@ -3,7 +3,7 @@
 
 namespace Logistic.ConsoleClient.Models
 {
-    public class Warehouse : IRecord<int>
+    public class Warehouse : IRecord
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,6 +11,10 @@ namespace Logistic.ConsoleClient.Models
         public Warehouse()
         {
             Cargos = new List<Cargo>();
+        }
+        public override string ToString()
+        {
+            return $"Info about warehouse with ID: {Id} name: {Name} ";
         }
     }
 }

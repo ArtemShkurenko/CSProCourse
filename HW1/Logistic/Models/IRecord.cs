@@ -3,9 +3,8 @@
 
 namespace Logistic.ConsoleClient.Models
 {
-    internal interface IRecord<TId>
-        where TId : struct, IEquatable<TId>
+    internal interface IRecord   
     {
-        public TId Id { get; set; }
+        public int Id { get; set; }
     }
 }

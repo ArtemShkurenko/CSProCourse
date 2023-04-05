@@ -1,5 +1,5 @@
 ﻿using Logistic.ConsoleClient.Models;
-using Logistic.ConsoleClient.Reports;
+using Logistic.ConsoleClient.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,28 +10,16 @@ using System.Xml.Serialization;
 
 namespace Logistic.ConsoleClient.DataBase
 {
-    internal class XmlFileRepository<TEntity, TId> : IReportRepository<TEntity, TId>
-        where TEntity : IRecord<TId>
-        where TId : struct, IEquatable<TId>
+    internal class XmlFileRepository<TEntity> : IReportRepository<TEntity>
+
     {
         protected string fullFilePath { get; set; }
         public XmlFileRepository(string FullFilePath)
         {
             fullFilePath = FullFilePath;
         }
-        public TEntity GetRecordById(TId id)
-        {
-            FileStream filestream = new FileStream(fullFilePath, FileMode.Open, FileAccess.ReadWrite);
-            StreamReader streamreader = new StreamReader(filestream);
-            XmlSerializer deserializedObject = new XmlSerializer(typeof(IEnumerable<TEntity>));
-            IEnumerable<TEntity> deserializedCollection = (IEnumerable<TEntity>)deserializedObject.Deserialize(streamreader);
-            if (deserializedCollection == null)
-            {
-                throw new Exception("Not found exception");
-            }
-            return deserializedCollection.FirstOrDefault(x => x.Id.Equals(id));
-        }
-        public void SaveRecords(IEnumerable<IRecord<TId>> records)
+        
+        public void SaveRecords(IEnumerable<IRecord> records)
         {
             List<TEntity> concreteList = new List<TEntity>((IEnumerable<TEntity>)records);
             XmlSerializer dataToSave = new XmlSerializer(typeof(List<TEntity>));

@@ -3,31 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
-using Logistic.ConsoleClient.Reports;
 using Logistic.ConsoleClient.Models;
+using Logistic.ConsoleClient.Services;
 
 namespace Logistic.ConsoleClient.DataBase
 {
-    internal class JsonFileRepository <TEntity, TId>: IReportRepository<TEntity, TId>
-        where TEntity : IRecord<TId>
-        where TId: struct, IEquatable<TId>
+    internal class JsonFileRepository<TEntity> : IReportRepository<TEntity>
+
     {
         protected string fullFilePath { get; set; }
         public JsonFileRepository(string FullFilePath)
         {
             fullFilePath = FullFilePath;
         }
-        public TEntity GetRecordById(TId id)
-        {
-            string dataReadFromFile = File.ReadAllText(fullFilePath);
-            IEnumerable<TEntity> deserializedCollection = JsonConvert.DeserializeObject<IEnumerable<TEntity>>(dataReadFromFile);
-            if (deserializedCollection == null)
-            {
-                throw new Exception("Not found exception");
-            }
-            return deserializedCollection.FirstOrDefault(x => x.Id.Equals(id));
-        }
-        public void SaveRecords(IEnumerable<IRecord<TId>> records)
+        public void SaveRecords(IEnumerable<IRecord> records)
         {
             var dataToSave = JsonConvert.SerializeObject(records);
             File.WriteAllText(fullFilePath, dataToSave);

@@ -9,32 +9,41 @@ using System.Threading.Tasks;
 
 namespace Logistic.ConsoleClient.Services
 {
-    internal class WarehouseService : InMemoryRepository<Warehouse, int>
+    internal class WarehouseService
     {
-        private int Id = 0;
-        protected Warehouse DeepCopy(Warehouse warehouse)
+        private readonly InMemoryRepository<Warehouse> _warehouseRepository;
+        //private int Id = 0;
+        public WarehouseService(InMemoryRepository<Warehouse> warehouseRepository)
         {
-             return base.DeepCopy(warehouse);
+            _warehouseRepository = warehouseRepository;
         }
+       /* public Warehouse DeepCopy(Warehouse warehouse)
+        {
+             return _warehouseRepository.DeepCopy(warehouse);
+        }*/
         public void Create(Warehouse warehouse)
         {
-            warehouse.Id = ++Id;
-            base.Create(warehouse);
+            //warehouse.Id = ++Id;
+            _warehouseRepository.Create(warehouse);
         }
 
         public Warehouse GetById(int warehouseId)
         {
-            return base.GetRecordById(warehouseId);
+            return _warehouseRepository.GetRecordById(warehouseId);
         }
 
         public IEnumerable<Warehouse> GetAll()
         {
-            return base.GetAll();
+            return _warehouseRepository.GetAll();
         }
 
-        public Warehouse? Delete(int warehouseId)
+        public void Delete(int warehouseId)
         {
-            return base.Delete(warehouseId);
+           _warehouseRepository.Delete(warehouseId);
+        }
+        public void Update(Warehouse warehouse)
+        {
+            _warehouseRepository.Update(warehouse);
         }
         public void LoadCargo(Cargo cargo, int warehouseId)
         {
@@ -44,10 +53,9 @@ namespace Logistic.ConsoleClient.Services
                 warehouse.Cargos.Add(cargo);
             }
         }
-
-        public Warehouse UnloadCargo(Guid cargoId, int warehouseId)
+        public void UnloadCargo(Guid cargoId, int warehouseId)
         {
-            var warehouse = base.GetRecordById(warehouseId);
+            var warehouse = _warehouseRepository.GetRecordById(warehouseId);
             if (warehouse == null)
             {
                 throw new ArgumentException($"Vehicle with Id {warehouseId} does not exist.");
@@ -59,7 +67,7 @@ namespace Logistic.ConsoleClient.Services
                 throw new ArgumentException($"Cargo with Id {cargoId} does not exist in Vehicle with Id {warehouseId}.");
             }
             warehouse.Cargos.Remove(cargoToRemove);
-            return base.Update(warehouse);
+            //return _warehouseRepository.Update(warehouse);
 
         }
     }

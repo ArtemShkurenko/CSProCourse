@@ -7,6 +7,7 @@ using Logistic.ConsoleClient.Models;
 using Logistic.ConsoleClient.DataBase;
 using Logistic.ConsoleClient.Services;
 
+
 Console.WriteLine("LOGISTIC");
 Console.WriteLine("\n\nDescription of the main commands: ");
 Console.WriteLine("Create feature: add vehicle  OR   add warehouse");
@@ -17,8 +18,10 @@ Console.WriteLine("Create report in file(json or xml): create-report vehicle jso
 Console.WriteLine("Read report from file: load-report vehicle OR load report warehouse");
 
 
-var vehicles = new VehicleService();
-var warehouse = new WarehouseService();
+var vehicleService = new VehicleService(new InMemoryRepository<Vehicle>());
+var warehouseService = new WarehouseService(new InMemoryRepository<Warehouse>());
+var vehicleReportService = new ReportService<Vehicle>();
+var warehouseReportService = new ReportService<Warehouse>();
 
 
 
@@ -73,15 +76,22 @@ void ExecudeAdd(String[] commandParts)
                 var weight = int.Parse(Console.ReadLine());
                 Console.WriteLine("Input max load volume:");
                 var volume = int.Parse(Console.ReadLine());
-                Console.WriteLine("Input type of vehicle: car/ship/plane/train");
-                string input = Console.ReadLine();
-                if (Enum.TryParse<VehicleType>(input, out VehicleType vehicleType))
+                try
                 {
-                    VehicleType Type = vehicleType;
+                    Console.WriteLine("Input type of vehicle: car/ship/plane/train");
+                    string input = Console.ReadLine();
+                    if (Enum.TryParse(input,true, out VehicleType vehicleType))
+                    {
+                       VehicleType Type = vehicleType;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Invalid input. Please enter either 'car', 'ship', 'plane', or 'train'.");
+                    }
                 }
-                else
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("Incorrect, add type car, please correct feature");
+                    Console.WriteLine(ex.Message);
                 }
                 var vehicleToAdd = new Vehicle()
                 {
@@ -89,7 +99,7 @@ void ExecudeAdd(String[] commandParts)
                     MaxCargoVolume = volume,
                     Name = name,
                 };
-                vehicles.Create(vehicleToAdd);
+                vehicleService.Create(vehicleToAdd);
                 
                 break;
             }
@@ -101,7 +111,7 @@ void ExecudeAdd(String[] commandParts)
                 {
                     Name = name,
                 };
-                warehouse.Create(warehouseToAdd);
+                warehouseService.Create(warehouseToAdd);
                 break;
             }
         default:
@@ -120,28 +130,26 @@ void ExecudeGetAll(string[] commandParts)
 
             case "vehicle":
                 {
-                    var allVehicles = vehicles.GetAll();
+                    var allVehicles = vehicleService.GetAll();
                     foreach (Vehicle vehicle in allVehicles)
                     {
-                        Console.WriteLine($"\n{vehicle.GetInformation()}");
-                        Console.WriteLine($"List cargos {vehicle.Name}");
-                        foreach (var i in vehicle.Cargos)
+                        Console.WriteLine($"\n{vehicle.ToString()}");
+                        foreach (var cargo in vehicle.Cargos)
                         {
-                            Console.WriteLine($"cargoId: {i.Id}");
+                            Console.WriteLine($"{cargo.ToString}");
                         }
                     }
                     break;
                 }
             case "warehouse":
                 {
-                    var allWarehouse = warehouse.GetAll();
+                    var allWarehouse = warehouseService.GetAll();
                     foreach (Warehouse warehouse in allWarehouse)
                     {
-                        Console.WriteLine($"\nName warehouse: {warehouse.Name}||| ID: {warehouse.Id}");
-                        Console.WriteLine($"List cargos {warehouse.Name}");
-                        foreach (var i in warehouse.Cargos)
+                        Console.WriteLine($"\n{warehouse.ToString()}");
+                        foreach (var cargo in warehouse.Cargos)
                         {
-                            Console.WriteLine($"cargoId: {i.Id}");
+                            Console.WriteLine($"{cargo.ToString}");
                         }
                     }
                     break;
@@ -176,7 +184,7 @@ void ExecudeLoadCargo(string[] commandParts)
                 cargo.Weight = int.Parse(Console.ReadLine());
                 Console.WriteLine("Input volume cargo");
                 cargo.Volume = double.Parse(Console.ReadLine());
-                vehicles.LoadCargo(cargo, vehicleID);
+                vehicleService.LoadCargo(cargo, vehicleID);
                
                 break;
             }
@@ -191,7 +199,7 @@ void ExecudeLoadCargo(string[] commandParts)
                 cargo.Weight = int.Parse(Console.ReadLine());
                 Console.WriteLine("Input volume cargo");
                 cargo.Volume = double.Parse(Console.ReadLine());
-                warehouse.LoadCargo(cargo, wareHouseId);
+                warehouseService.LoadCargo(cargo, wareHouseId);
                 break;
             }
         default:
@@ -204,45 +212,19 @@ void ExecudeLoadCargo(string[] commandParts)
 }
 void ExecudeCreateReport(String[] commandParts)
 {
+    String example = commandParts[2];
+    Enum.TryParse<ReportType>(example, out ReportType reportType);
 
     if (commandParts[1] == "vehicle")
     {
-        if (commandParts[2] == "json")
-        {
-            var vehicleReportService = new ReportService<Vehicle>();
-            var allVehicles = vehicles.GetAll();
-            vehicleReportService.CreateReport(ReportType.Json, allVehicles);
-        }
-        else if (commandParts[2] == "xml")
-        {
-            var vehileReportService = new ReportService<Vehicle>();
-            var allVehicles = vehicles.GetAll();
-            vehileReportService.CreateReport(ReportType.Xml, allVehicles);
-        }
-        else
-        {
-            Console.WriteLine("Input correct command: create-report vehicle json OR create-report vehicle xml");
-        }
+        var allVehicles = vehicleService.GetAll();
+        vehicleReportService.CreateReport(reportType, allVehicles);
     }
     else if (commandParts[1] == "warehouse")
-    {
-        if (commandParts[2] == "json")
-        {
-            var warehouseReportService = new ReportService<Warehouse>();
-            var allVWareHouses = warehouse.GetAll();
-            warehouseReportService.CreateReport(ReportType.Json, allVWareHouses);
-        }
-        else if (commandParts[2] == "xml")
-        {
-            var warehouseReportService = new ReportService<Warehouse>();
-            var allVWareHouses = warehouse.GetAll();
-            warehouseReportService.CreateReport(ReportType.Xml, allVWareHouses);
-        }
-        else
-        {
-            Console.WriteLine("Input correct command: create-report warehouse json OR create-report warehouse xml");
-        }
-    }
+    { 
+        var allVWareHouses = warehouseService.GetAll();
+        warehouseReportService.CreateReport(reportType, allVWareHouses);
+    }    
     else
     {
         Console.WriteLine("Incorrect input, please input: create-report vehicle json/create-report vehicle xml OR create-report warehouse json/create-report warehouse xml");
@@ -254,11 +236,10 @@ void ExecudeLoadReportFilename(String[] commandParts)
     switch (commandParts[1])
     {
         case "vehicle":
-            {
-                var vehicleReportService = new ReportService<Vehicle>();
+            {              
                 Console.WriteLine("Input file for reading:");
                 string fileName = Console.ReadLine();
-                var vehicles = (List<Vehicle>)vehicleReportService.LoadReport(fileName);
+                var vehicles = vehicleReportService.LoadReport(fileName);
                 foreach (var vehicle in vehicles)
                 {
                     Console.WriteLine($"ID feature: {vehicle.Id} name:{vehicle.Type} ||| MaxCargoWeightKg{vehicle.MaxCargoWeightKg} ||| MaxCargoVolume{vehicle.MaxCargoVolume}");
@@ -267,10 +248,9 @@ void ExecudeLoadReportFilename(String[] commandParts)
             }
         case "warehouse":
             {
-                var warehouseReportService = new ReportService<Warehouse>();
                 Console.WriteLine("Input file for reading:");
                 string fileName = Console.ReadLine();
-                var warehouses = (List<Warehouse>)warehouseReportService.LoadReport(fileName);
+                var warehouses = warehouseReportService.LoadReport(fileName);
                 foreach (var warehose in warehouses)
                 {
                     Console.WriteLine($"ID feature: {warehose.Id} name:{warehose.Name} |||");
@@ -297,7 +277,7 @@ void ExecudeUnloadCargo(String[] commandParts)
                     int vehicleID = int.Parse(Console.ReadLine());
                     Console.WriteLine("\nInput ID cargo for unload:");
                     Guid cargoId = Guid.Parse(Console.ReadLine());
-                    vehicles.UnloadCargo(cargoId, vehicleID);
+                    vehicleService.UnloadCargo(cargoId, vehicleID);
                     break;
                 }
             case "warehouse":
@@ -306,7 +286,7 @@ void ExecudeUnloadCargo(String[] commandParts)
                     int warehoseID = int.Parse(Console.ReadLine());
                     Console.WriteLine("\nInput ID cargo for unload:");
                     Guid cargoId = Guid.Parse(Console.ReadLine());
-                    warehouse.UnloadCargo(cargoId, warehoseID);
+                    warehouseService.UnloadCargo(cargoId, warehoseID);
                     break;
                 }
             default:
@@ -321,15 +301,6 @@ void ExecudeUnloadCargo(String[] commandParts)
     {
         Console.WriteLine("Repeat your input,please.....");
     }
-}
-public static class Commands
-{
-    public const string CREATE_COMMAND = "add";
-    public const string GETALL_COMMAND = "get-all";
-    public const string LOADCARGO_COMMAND = "load-cargo";
-    public const string UNLOADCARGO_COMMAND = "unload-cargo";
-    public const string CREATE_REPORT_COMMAND = "create-report";
-    public const string LOAD_REPORT_COMMAND = "load-report";
 }
 
 
