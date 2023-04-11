@@ -12,16 +12,18 @@ using Logistic.ConsoleClient.DataBase;
 
 namespace Logistic.ConsoleClient.Services
 {
-    internal class ReportService<TEntity>
-    
-    {
-        private readonly JsonFileRepository<TEntity> _JsonRepo;
-        private readonly XmlFileRepository<TEntity> _XmlRepo;
+    internal class ReportService<TEntity>   
+    {      
+        private readonly IReportRepository<TEntity> _xmlRepository;
+        private readonly IReportRepository<TEntity> _jsonRepository;
+
         internal readonly string _reporDir;
         internal string appDir = Directory.GetCurrentDirectory();
 
-        internal ReportService()
+        internal ReportService(IReportRepository<TEntity> xmlRepository, IReportRepository<TEntity> jsonRepository)
        {
+            _jsonRepository = jsonRepository;
+            _xmlRepository = xmlRepository;
             _reporDir = Path.Combine(appDir, "Reports");
             Directory.CreateDirectory(_reporDir);
        }
@@ -32,14 +34,15 @@ namespace Logistic.ConsoleClient.Services
             var filepath = Path.Combine(_reporDir, $"{typeof(TEntity).Name}-{DateTime.Now.ToString("MM-dd-yyyy-HH-mm-ss")}.{formatReport}");
             if (reportType == ReportType.Json)
             {
-                var _JsonRepo = new JsonFileRepository<TEntity>(filepath);
-                _JsonRepo.SaveRecords((IEnumerable<IRecord>)entity);
+                var _jsonRepository = new JsonFileRepository<TEntity>();
+
+                _jsonRepository.SaveRecords((IEnumerable<IRecord>)entity, filepath);
                 Console.WriteLine(filepath);
             }
             if (reportType == ReportType.Xml)
             {
-                var _XmlRepo = new XmlFileRepository<TEntity>(filepath);
-                _XmlRepo.SaveRecords((IEnumerable<IRecord>)entity);
+                var _xmlRepository = new XmlFileRepository<TEntity>();
+                _xmlRepository.SaveRecords((IEnumerable<IRecord>)entity, filepath);
                 Console.WriteLine(filepath);
             }
         }
@@ -57,15 +60,15 @@ namespace Logistic.ConsoleClient.Services
             {
                 case ".xml":
                     {
-                        var _XmlRepo = new XmlFileRepository<TEntity>(reportFilePath);
-                        return (IEnumerable<TEntity>)_XmlRepo.ReadRecords(fileName);
+                        var _xmlRepository = new XmlFileRepository<TEntity>();
+                        return (IEnumerable<TEntity>)_xmlRepository.ReadRecords(reportFilePath);
                         break;
                     }
 
                 case ".json":
                     {
-                        var _JsonRepo = new JsonFileRepository<TEntity>(reportFilePath);
-                        return (IEnumerable<TEntity>)_JsonRepo.ReadRecords(fileName);
+                        var _jsonRepository = new JsonFileRepository<TEntity>();
+                        return (IEnumerable<TEntity>)_jsonRepository.ReadRecords(reportFilePath);
                         break;
                     }
                 default:

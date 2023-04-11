@@ -20,8 +20,8 @@ Console.WriteLine("Read report from file: load-report vehicle OR load report war
 
 var vehicleService = new VehicleService(new InMemoryRepository<Vehicle>());
 var warehouseService = new WarehouseService(new InMemoryRepository<Warehouse>());
-var vehicleReportService = new ReportService<Vehicle>();
-var warehouseReportService = new ReportService<Warehouse>();
+var vehicleReportService = new ReportService<Vehicle>(new JsonFileRepository<Vehicle>(), new XmlFileRepository<Vehicle>());
+var warehouseReportService = new ReportService<Warehouse>(new JsonFileRepository<Warehouse>(), new XmlFileRepository<Warehouse>());
 
 
 

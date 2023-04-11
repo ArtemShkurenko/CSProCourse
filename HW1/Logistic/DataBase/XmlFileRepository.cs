@@ -13,13 +13,8 @@ namespace Logistic.ConsoleClient.DataBase
     internal class XmlFileRepository<TEntity> : IReportRepository<TEntity>
 
     {
-        protected string fullFilePath { get; set; }
-        public XmlFileRepository(string FullFilePath)
-        {
-            fullFilePath = FullFilePath;
-        }
-        
-        public void SaveRecords(IEnumerable<IRecord> records)
+               
+        public void SaveRecords(IEnumerable<IRecord> records, string fullFilePath)
         {
             List<TEntity> concreteList = new List<TEntity>((IEnumerable<TEntity>)records);
             XmlSerializer dataToSave = new XmlSerializer(typeof(List<TEntity>));
@@ -32,7 +27,7 @@ namespace Logistic.ConsoleClient.DataBase
         public List<TEntity> ReadRecords(string fileName)
         {
             List<TEntity> entity;
-            using (FileStream filestream = new FileStream(fullFilePath, FileMode.OpenOrCreate))
+            using (FileStream filestream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
                 XmlSerializer deserializedObject = new XmlSerializer(typeof(List<TEntity>));
                 entity = deserializedObject.Deserialize(filestream) as List<TEntity>;

@@ -11,19 +11,15 @@ namespace Logistic.ConsoleClient.DataBase
     internal class JsonFileRepository<TEntity> : IReportRepository<TEntity>
 
     {
-        protected string fullFilePath { get; set; }
-        public JsonFileRepository(string FullFilePath)
-        {
-            fullFilePath = FullFilePath;
-        }
-        public void SaveRecords(IEnumerable<IRecord> records)
+       
+        public void SaveRecords(IEnumerable<IRecord> records, string fullFilePath)
         {
             var dataToSave = JsonConvert.SerializeObject(records);
             File.WriteAllText(fullFilePath, dataToSave);
         }
         public List<TEntity> ReadRecords(string fileName)
         {
-            string dataReadFromFile = File.ReadAllText(fullFilePath);
+            string dataReadFromFile = File.ReadAllText(fileName);
             IEnumerable<TEntity> deserializedCollection = JsonConvert.DeserializeObject<IEnumerable<TEntity>>(dataReadFromFile);
             if (deserializedCollection == null)
             {
