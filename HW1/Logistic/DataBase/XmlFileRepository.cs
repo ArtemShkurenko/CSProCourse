@@ -31,16 +31,18 @@ namespace Logistic.ConsoleClient.DataBase
         }
         public List<TEntity> ReadRecords(string fileName)
         {
-            FileStream filestream = new FileStream(fullFilePath, FileMode.Open, FileAccess.Read);
-            StreamReader streamreader = new StreamReader(filestream);
-            XmlSerializer deserializedObject = new XmlSerializer(typeof(List<TEntity>));
-            IEnumerable<TEntity> deserializedCollection = (IEnumerable<TEntity>)deserializedObject.Deserialize(streamreader);
-                if (deserializedCollection == null)
-                {
-                    throw new Exception("Not found exception");
-                }
-                return deserializedCollection.ToList();           
+            List<TEntity> entity;
+            using (FileStream filestream = new FileStream(fullFilePath, FileMode.OpenOrCreate))
+            {
+                XmlSerializer deserializedObject = new XmlSerializer(typeof(List<TEntity>));
+                entity = deserializedObject.Deserialize(filestream) as List<TEntity>;
+            }
+            if (entity == null)
+            {
+                throw new Exception("Not found exception");
+            }
+            return entity.ToList();
+
         }
     }
-
 }

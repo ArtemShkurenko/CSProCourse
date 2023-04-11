@@ -7,7 +7,7 @@ using Logistic.ConsoleClient.Services;
 
 namespace Logistic.ConsoleClient.DataBase
 {
-    internal /*abstract*/ class InMemoryRepository<TEntity> : IRepository<TEntity>
+    internal class InMemoryRepository<TEntity> : IRepository<TEntity>
         where TEntity : IRecord, new()
       
     {
@@ -43,7 +43,7 @@ namespace Logistic.ConsoleClient.DataBase
         public void Update(TEntity newEntity)
         {
             var oldEntity = _records.FirstOrDefault(x => x.Id.Equals(newEntity.Id));
-            _records.Remove(DeepCopy(oldEntity));
+            _records.Remove(oldEntity);
             _records.Add(DeepCopy(newEntity));
            
         }

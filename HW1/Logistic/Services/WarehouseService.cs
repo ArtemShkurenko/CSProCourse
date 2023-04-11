@@ -11,19 +11,13 @@ namespace Logistic.ConsoleClient.Services
 {
     internal class WarehouseService
     {
-        private readonly InMemoryRepository<Warehouse> _warehouseRepository;
-        //private int Id = 0;
-        public WarehouseService(InMemoryRepository<Warehouse> warehouseRepository)
+        private readonly IRepository<Warehouse> _warehouseRepository;
+        public WarehouseService(IRepository<Warehouse> warehouseRepository)
         {
             _warehouseRepository = warehouseRepository;
         }
-       /* public Warehouse DeepCopy(Warehouse warehouse)
-        {
-             return _warehouseRepository.DeepCopy(warehouse);
-        }*/
         public void Create(Warehouse warehouse)
         {
-            //warehouse.Id = ++Id;
             _warehouseRepository.Create(warehouse);
         }
 
@@ -67,8 +61,6 @@ namespace Logistic.ConsoleClient.Services
                 throw new ArgumentException($"Cargo with Id {cargoId} does not exist in Vehicle with Id {warehouseId}.");
             }
             warehouse.Cargos.Remove(cargoToRemove);
-            //return _warehouseRepository.Update(warehouse);
-
         }
     }
 }

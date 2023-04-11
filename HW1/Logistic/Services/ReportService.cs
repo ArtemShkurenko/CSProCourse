@@ -72,6 +72,5 @@ namespace Logistic.ConsoleClient.Services
                     throw new ArgumentException($"Invalid report type");
             }
         }
-
     }
 }

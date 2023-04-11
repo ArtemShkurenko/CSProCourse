@@ -14,7 +14,7 @@ Console.WriteLine("Create feature: add vehicle  OR   add warehouse");
 Console.WriteLine("Get all features: get-all vehicle  OR   get-all warehouse");
 Console.WriteLine("Load cargo in vehicle OR warehouse: load-cargo vehicle  OR   load-cargo warehouse");
 Console.WriteLine("Unload cargo in vehicle OR warehouse: unload-cargo vehicle  OR   unload-cargo warehouse");
-Console.WriteLine("Create report in file(json or xml): create-report vehicle json/create-report vehicle xml OR create-report warehouse json/create-report warehouse xml");
+Console.WriteLine("Create report in file(json or xml): create-report vehicle json/create-report vehicle Xml OR create-report warehouse json/create-report warehouse Xml");
 Console.WriteLine("Read report from file: load-report vehicle OR load report warehouse");
 
 

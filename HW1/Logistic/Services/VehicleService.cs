@@ -13,21 +13,13 @@ namespace Logistic.ConsoleClient.Services
 {
     internal class VehicleService
     {
-        private readonly InMemoryRepository<Vehicle> _vehicleRepository;
-        //private readonly InMemoryRepository<Cargo> _cargoRepository;
-        //private int Id = 0;
-        public VehicleService(InMemoryRepository<Vehicle> vehiceleRepository)
+        private readonly IRepository<Vehicle> _vehicleRepository;
+        public VehicleService(IRepository<Vehicle> vehiceleRepository)
         {
             _vehicleRepository = vehiceleRepository;
         }
-       /* public Vehicle DeepCopy(Vehicle vehicle)
-        { 
-            return _vehicleRepository.DeepCopy(vehicle);
-        }*/
-        
         public void Create(Vehicle vehicle)
         {
-           // vehicle.Id = ++Id;
             _vehicleRepository.Create(vehicle);
         }
   
@@ -45,7 +37,6 @@ namespace Logistic.ConsoleClient.Services
         {
            _vehicleRepository.Delete(vehicleId);
         }
-
         public void Update (Vehicle vehicle)
         {
            _vehicleRepository.Update(vehicle);
@@ -54,8 +45,8 @@ namespace Logistic.ConsoleClient.Services
         public void LoadCargo(Cargo cargo, int vehicleId)
         {
             var vehicle = _vehicleRepository.GetRecordById(vehicleId);
-            var totalLoadedWeight = vehicle.Cargos.Sum(x => x.Weight);
-            var totalLoadedVolume = vehicle.Cargos.Sum(x => x.Volume);
+            var totalLoadedWeight = vehicle.Cargos.Sum(x => x.Weight) + cargo.Weight;
+            var totalLoadedVolume = vehicle.Cargos.Sum(x => x.Volume) + cargo.Volume;
 
             if (vehicle == null)
             {
@@ -69,10 +60,7 @@ namespace Logistic.ConsoleClient.Services
             {
                 throw new Exception($"Cargos don`t fit by volume: cargo {cargo.Id}//volume {cargo.Volume} m3");
             }
-            totalLoadedWeight += cargo.Weight;
-            totalLoadedVolume += cargo.Volume;
             vehicle.Cargos.Add(cargo);
-            //return _vehicleRepository.Update(vehicle);
         }
         public void UnloadCargo(Guid cargoId, int vehicleId)
         {
@@ -87,7 +75,6 @@ namespace Logistic.ConsoleClient.Services
                 throw new ArgumentException($"Cargo with Id {cargoId} does not exist in Vehicle with Id {vehicleId}.");
             }          
             vehicle.Cargos.Remove(cargoToRemove);
-           // return _vehicleRepository.Update(vehicle);
         }
 
     }
