@@ -1,0 +1,37 @@
+Create DATABASE Logistics
+USE Logistics;
+create table Warehouse (
+ Id INT PRIMARY KEY,
+ Name VARCHAR(50) NOT NULL);
+CREATE TABLE Vehicle (
+Id INT PRIMARY KEY,
+Name VARCHAR(50) NOT NULL,
+VehicleType VARCHAR(50) DEFAULT 'Car' NOT NULL,
+MaxCargoWeightKg INT NOT NULL,
+MaxCargoVolume DECIMAL (10,2)
+);
+CREATE TABLE Cargo (
+Id UNIQUEIDENTIFIER PRIMARY KEY,
+Code VARCHAR(50) NOT NULL,
+Volume DECIMAL(10,2) NOT NULL,
+Weight INT NOT NULL,
+WarehouseId INT NOT NULL,
+VehicleId INT NOT NULL,
+FOREIGN KEY (WarehouseId) REFERENCES Warehouse(Id),
+FOREIGN KEY (VehicleId) REFERENCES Vehicle(Id)
+);
+ALTER TABLE Vehicle
+ALTER COLUMN MaxCargoVolume DECIMAL(10, 2) NOT NULL;
+
+CREATE TABLE Invoice (
+Id UNIQUEIDENTIFIER PRIMARY KEY,
+RecipientAddress VARCHAR(50) NOT NULL,
+SenderAddress VARCHAR(50) NOT NULL,
+RecipientPhoneNumber VARCHAR(50),
+SenderPhoneNumber VARCHAR(50),
+CargoId UNIQUEIDENTIFIER,
+FOREIGN KEY (CargoId) REFERENCES Cargo(Id)
+);
+
+
+
