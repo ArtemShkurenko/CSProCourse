@@ -4,6 +4,7 @@ using Logistic.Models;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using System.Xml.Serialization;
+using AutoFixture;
 
 namespace Logistics.DAL.Tests
 {
@@ -30,12 +31,9 @@ namespace Logistics.DAL.Tests
         public void Create_WhenValidJson_SerializeSuccessfully()
         {
             // Arrange
-            var testPath = Path.Combine("Resource", "CreateTest", "json_vehicle_test.json");
-            var entities = new List<Vehicle>()
-            {
-                new Vehicle {Name = "ae1401", MaxCargoVolume= 10, MaxCargoWeightKg = 100, Cargos = new List<Cargo>()},
-                new Vehicle {Name = "ae1506", MaxCargoVolume= 12, MaxCargoWeightKg = 140, Cargos = new List<Cargo>()},
-            };
+            var testPath = Path.Combine("Resource", "CreateTest", "json_vehicle_test.xml");
+            var fixture = new Fixture();
+            var entities = fixture.Create<List<Vehicle>>();
             _xmlFileRepository.SaveRecords(entities, testPath);
             var result = _xmlFileRepository.ReadRecords(testPath);
 

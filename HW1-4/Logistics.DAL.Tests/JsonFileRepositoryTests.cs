@@ -3,6 +3,7 @@ using Xunit;
 using Logistic.Models;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using AutoFixture;
 
 namespace Logistics.DAL.Tests
 {
@@ -29,11 +30,8 @@ namespace Logistics.DAL.Tests
         {
             // Arrange
             var testPath = Path.Combine("Resource", "CreateTest", "json_vehicle_test.json");
-            var entities = new List<Vehicle>()
-            {
-                new Vehicle {Name = "ae1401", MaxCargoVolume= 10, MaxCargoWeightKg = 100},
-                new Vehicle {Name = "ae1506", MaxCargoVolume= 12, MaxCargoWeightKg = 140},
-            };
+            var fixture = new Fixture();
+            var entities = fixture.Create<List<Vehicle>>();
             _jsonFileRepository.SaveRecords(entities, testPath);
             var result = _jsonFileRepository.ReadRecords(testPath);
 

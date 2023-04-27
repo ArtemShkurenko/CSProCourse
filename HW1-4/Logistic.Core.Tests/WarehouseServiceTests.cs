@@ -2,6 +2,7 @@ using Logistic.Core.Services;
 using Logistic.Models;
 using Xunit;
 using Moq;
+using AutoFixture;
 
 namespace Logistic.Core.Tests
 {
@@ -66,46 +67,28 @@ namespace Logistic.Core.Tests
         public void LoadCargo_AddCargo_WhenCargoAdd()
         {
             //Arrange
-            var warehouse = new Warehouse
-            {
-                Id =1,
-                Name ="Main",
-                Cargos = new List<Cargo>(),
-            };
+            var fixture = new Fixture();
+            var warehouse = fixture.Create<Warehouse>();
             _repositoryMock.Setup(x => x.GetRecordById(warehouse.Id)).Returns(warehouse);
-            var cargo = new Cargo
-            {
-                Id = Guid.NewGuid(),
-                Weight = 50,
-                Volume = 2,
-            };
+            var cargo = fixture.Create<Cargo>();
             //Act
             _warehouseService.LoadCargo(cargo, warehouse.Id);
             //Assert
-            Assert.Single(warehouse.Cargos);
-            Assert.Equal(cargo, warehouse.Cargos.Single());
+            Assert.Contains(cargo, warehouse.Cargos);
         }
+        [Fact]
         public void UnLoadCargo_RemoveCargo_NotIncludeCargo()
         {
             //Arrange
-            var warehouse = new Warehouse
-            {
-                Id = 1,
-                Name = "Main",
-                Cargos = new List<Cargo>(),
-            };
+            var fixture = new Fixture();
+            var warehouse = fixture.Create<Warehouse>();
             _repositoryMock.Setup(x => x.GetRecordById(warehouse.Id)).Returns(warehouse);
-            var cargo = new Cargo
-            {
-                Id = Guid.NewGuid(),
-                Weight = 50,
-                Volume = 20,
-            };
+            var cargo = fixture.Create<Cargo>();
             warehouse.Cargos.Add(cargo);
             //Act
             _warehouseService.UnloadCargo(cargo.Id, warehouse.Id);
             //Assert
-            Assert.Empty(warehouse.Cargos);
+            Assert.DoesNotContain(cargo, warehouse.Cargos);
         }
     }
     

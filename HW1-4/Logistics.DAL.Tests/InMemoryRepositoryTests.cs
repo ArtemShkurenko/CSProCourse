@@ -1,10 +1,11 @@
 using Logistic.DAL.DataBase;
 using Xunit;
 using Logistic.Models;
+using AutoFixture;
 
 
 
-namespace Logistic.DAL.Tests
+namespace Logistics.DAL.Tests
 {
     public class InMemoryRepositoryTests
     {
@@ -27,12 +28,8 @@ namespace Logistic.DAL.Tests
         public void GetRecordById_EntityExists_ReturnsCopyOfEntity()
         {
             // Arrange
-            var vehicle = new Vehicle()
-            {
-                MaxCargoVolume = 10,
-                MaxCargoWeightKg = 100,
-                Name = "AE5608",
-            };
+            var fixture = new Fixture();
+            var vehicle = fixture.Create<Vehicle>();
             inMemoryRepository.Create(vehicle);
             var copyId = inMemoryRepository._records[0].Id;
 
@@ -64,21 +61,10 @@ namespace Logistic.DAL.Tests
         public void Update_WhenValidEntity_UpdatesRecord()
         {
             // Arrange
-            var vehicle = new Vehicle()
-            {
-                MaxCargoVolume = 10,
-                MaxCargoWeightKg = 100,
-                Name = "AE1506"
-            };
+            var fixture = new Fixture();
+            var vehicle = fixture.Create<Vehicle>();
             inMemoryRepository.Create(vehicle);
-            var newVehicle = new Vehicle()
-            {
-                Id = vehicle.Id,
-                MaxCargoVolume = 20,
-                MaxCargoWeightKg = 200,
-                Name = "AE1507"
-            };
-
+            var newVehicle = fixture.Create<Vehicle>();
             // Act
             inMemoryRepository.Update(newVehicle);
             var result = inMemoryRepository.GetRecordById(newVehicle.Id);
@@ -94,18 +80,9 @@ namespace Logistic.DAL.Tests
         public void GetAll_ReturnsAllRecords()
         {
             // Arrange
-            var vehicle1 = new Vehicle()
-            {
-                MaxCargoVolume = 10,
-                MaxCargoWeightKg = 100,
-                Name = "AE1506"
-            };
-            var vehicle2 = new Vehicle()
-            {
-                MaxCargoVolume = 20,
-                MaxCargoWeightKg = 200,
-                Name = "AE1507"
-            };
+            var fixture = new Fixture();
+            var vehicle1 = fixture.Create<Vehicle>();
+            var vehicle2 = fixture.Create<Vehicle>();
             inMemoryRepository.Create(vehicle1);
             inMemoryRepository.Create(vehicle2);
 

@@ -2,6 +2,7 @@ using Logistic.Core.Services;
 using Logistic.Models;
 using Xunit;
 using Moq;
+using AutoFixture;
 
 namespace Logistic.Core.Tests
 {
@@ -106,28 +107,19 @@ namespace Logistic.Core.Tests
             //Act+Assert
             Assert.Throws<Exception>(() => _vehicleService.LoadCargo(cargo, vehicle.Id));
         }
+        [Fact]
         public void UnLoadCargo_RemoveCargo_NotIncludeCargo()
         {
             //Arrange
-            var vehicle = new Vehicle
-            {
-                Id = 1,
-                MaxCargoVolume = 10,
-                MaxCargoWeightKg = 100,
-                Cargos = new List<Cargo>(),
-            };
+            var fixture = new Fixture();
+            var vehicle = fixture.Create<Vehicle>();
             _repositoryMock.Setup(x => x.GetRecordById(vehicle.Id)).Returns(vehicle);
-            var cargo = new Cargo
-            {
-                Id = Guid.NewGuid(),
-                Weight = 50,
-                Volume = 20,
-            };
-            vehicle.Cargos.Add(cargo);
+            var removeCargo = fixture.Create<Cargo>();
+            vehicle.Cargos.Add(removeCargo);
             //Act
-            _vehicleService.UnloadCargo(cargo.Id, vehicle.Id);
+            _vehicleService.UnloadCargo(removeCargo.Id, vehicle.Id);
             //Assert
-            Assert.Empty(vehicle.Cargos);
+            Assert.DoesNotContain(removeCargo, vehicle.Cargos);
         }
     }
     
