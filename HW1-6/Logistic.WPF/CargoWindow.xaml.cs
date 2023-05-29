@@ -16,7 +16,7 @@ namespace Logistics.Wpf
 	public partial class CargoWindow : Window
 	{
         public CargoManagementResult Result { get; private set; }
-        public string SomeData = "Cargo ready to load choose vehicle and press Update";
+        public string SomeData = "Cargo was changed";
 		public bool IsDataSet = false;
         private List<Cargo> loadedCargoList;
         public Cargo loadedCargo { get; private set; }
@@ -24,7 +24,6 @@ namespace Logistics.Wpf
         public CargoWindow(VehicleViewModel selectedVehicle)
 		{
 			InitializeComponent();
-			var vehicles = selectedVehicle;
             loadedCargoList = selectedVehicle.Cargos;
             PopulateLoadedCargoListBox(selectedVehicle);
         }
@@ -32,6 +31,7 @@ namespace Logistics.Wpf
         private void PopulateLoadedCargoListBox(VehicleViewModel selectedVehicle)
         {
             LoadedCargoListBox.Items.Clear();
+           
             foreach (Cargo cargo in selectedVehicle.Cargos)
             {
                 LoadedCargoListBox.Items.Add(cargo);
@@ -87,8 +87,8 @@ namespace Logistics.Wpf
                 Cargo selectedCargo = LoadedCargoListBox.SelectedItem as Cargo;
                 Result = CargoManagementResult.UnloadExistingCargo;
                 loadedCargo = selectedCargo;
-
-
+                loadedCargoList.Remove(loadedCargo);
+                IsDataSet = true;
                 Close();
             }
             else

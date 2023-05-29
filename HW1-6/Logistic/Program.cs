@@ -136,7 +136,7 @@ void ExecudeGetAll(string[] commandParts)
                         Console.WriteLine($"\n{vehicle.ToString()}");
                         foreach (var cargo in vehicle.Cargos)
                         {
-                            Console.WriteLine($"{cargo.ToString}");
+                            Console.WriteLine($"{cargo.ToString()}");
                         }
                     }
                     break;

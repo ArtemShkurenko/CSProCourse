@@ -27,7 +27,7 @@ namespace Logistic.DAL.DataBase
         public TEntity GetRecordById(int Id)
         {
             var entity = _records.FirstOrDefault(x => x.Id.Equals(Id));
-            return DeepCopy(entity);           
+            return entity;           
         }
         public void Delete(int Id)
         {

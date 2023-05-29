@@ -17,7 +17,7 @@
         </GroupBox>
         <GroupBox Header="Add new cargo" Margin="382,10,17,57">
             <Grid>
-                <TextBlock Text="Code" Height="22" Margin="26,24,226,298"/>
+                <TextBlock Text="Code" Height="22" Margin="25,17,226,305"/>
                 <TextBox x:Name="cargoCode" VerticalAlignment="Top" Width="120" Margin="10,39,226,0" Height="22"/>
                 <TextBlock Text="Weight" Height="22" Margin="168,24,90,298"/>
                 <TextBox x:Name="cargoWeightTextBox" VerticalAlignment="Top" Width="120" Margin="146,39,90,0" Height="22"/>

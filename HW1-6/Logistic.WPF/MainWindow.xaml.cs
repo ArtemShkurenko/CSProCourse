@@ -9,13 +9,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System;
-using System.Linq;
 using System.Collections.Specialized;
 using Logistics.Wpf;
 
 namespace Logistics.Wpf
 {
-	public partial class MainWindow : Window
+    public partial class MainWindow : Window
 	{
 		private IMapper mapper;
 		private readonly VehicleService _vehicleService;
@@ -23,6 +22,7 @@ namespace Logistics.Wpf
         private string importFilePath;
         private string exportFilePath;
         private readonly ReportService<Vehicle> _reportService;
+     
 
 
         public MainWindow()
@@ -56,7 +56,6 @@ namespace Logistics.Wpf
                 vehicleNameTextBox.Text = string.Empty;
                 vehicleMaxWeightTextBox.Text = string.Empty;
                 vehicleMaxVolumeTextBox.Text = string.Empty;
-                comboBox.ItemsSource = null; 
                 comboBox.SelectedItem = null; 
             }
             UpdateButton.IsEnabled = vehicleListView.SelectedItem != null;
@@ -73,9 +72,7 @@ namespace Logistics.Wpf
                 var viewModel = mapper.Map<VehicleViewModel>(entity);
                 vehicles.Add(viewModel);
             }
-
             vehicleListView.ItemsSource = vehicles;
-
         }
         private void Button_Click(object sender, RoutedEventArgs e)
 		{
@@ -96,39 +93,9 @@ namespace Logistics.Wpf
                 selectedVehicle.MaxCargoWeightKg = int.Parse(vehicleMaxWeightTextBox.Text);
                 selectedVehicle.MaxCargoVolume = double.Parse(vehicleMaxVolumeTextBox.Text);
                 selectedVehicle.Type = (VehicleType)comboBox.SelectedItem;
-                CargoWindow cargoWindow = new CargoWindow(selectedVehicle);
-                cargoWindow.ShowDialog();
-                if (cargoWindow.IsDataSet)
-                {
-                    if (cargoWindow.Result == CargoManagementResult.LoadNewCargo)
-                    {
-                        try
-                        {
-                            _vehicleService.LoadCargo(cargoWindow.loadedCargo, selectedVehicle.Id);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                                              
-                    }
-                    else if (cargoWindow.Result == CargoManagementResult.UnloadExistingCargo)
-                    {
-                        try
-                        {
-                            Guid cargoId = cargoWindow.loadedCargo.Id;
-                            _vehicleService.UnloadCargo(cargoId, selectedVehicle.Id);
-                        }
-                        catch(Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }                                           
-                    }
-                }
                 Vehicle updatedVehicle = mapper.Map<Vehicle>(selectedVehicle);
                 _vehicleService.Update(updatedVehicle);
                 ReadAllVehicles();
-
             }
         }
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -150,6 +117,31 @@ namespace Logistics.Wpf
 
                 if (cargoWindow.IsDataSet)
                 {
+                    
+                    if (cargoWindow.Result == CargoManagementResult.LoadNewCargo)
+                    {
+                        try
+                        {
+                            _vehicleService.LoadCargo(cargoWindow.loadedCargo, selectedVehicle.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+
+                    }
+                    else if (cargoWindow.Result == CargoManagementResult.UnloadExistingCargo)
+                    {
+                        try
+                        {
+                            Guid cargoId = cargoWindow.loadedCargo.Id;
+                            _vehicleService.UnloadCargo(cargoId, selectedVehicle.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                     MessageBox.Show(cargoWindow.SomeData);
                 }
             }
@@ -190,14 +182,6 @@ namespace Logistics.Wpf
             {
                 MessageBox.Show($"Error exporting reports: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }           
-        }
-    }
-
-    public static class ReportTypeEnumWrapper
-    {
-        public static IEnumerable<ReportType> AllReportTypes
-        {
-            get { return Enum.GetValues(typeof(ReportType)).Cast<ReportType>(); }
         }
     }
 }
