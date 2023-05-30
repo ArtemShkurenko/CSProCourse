@@ -1,0 +1,30 @@
+﻿<Window x:Class="Logistics.Wpf.CargoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Logistics.Wpf"
+        mc:Ignorable="d"
+        Title="Cargo managment" Height="450" Width="800">
+    <Grid>
+
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="687,390,0,0" VerticalAlignment="Top" Height="34" Width="96" Click="CancelButton_Click"/>
+        <GroupBox Header="Remove existing cargo" Margin="10,10,429,10">
+            <Grid Height="387">
+                <ListBox x:Name="LoadedCargoListBox" Margin="10,10,10,57"/>
+                <Button Content="Unload selected cargo" HorizontalAlignment="Left" Margin="10,343,0,0" VerticalAlignment="Top" Height="34" Width="148" Click="UnloadSelectedCargoButton_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Add new cargo" Margin="382,10,17,57">
+            <Grid>
+                <TextBlock Text="Code" Height="22" Margin="25,17,226,305"/>
+                <TextBox x:Name="cargoCode" VerticalAlignment="Top" Width="120" Margin="10,39,226,0" Height="22"/>
+                <TextBlock Text="Weight" Height="22" Margin="168,24,90,298"/>
+                <TextBox x:Name="cargoWeightTextBox" VerticalAlignment="Top" Width="120" Margin="146,39,90,0" Height="22"/>
+                <TextBox x:Name="cargoVolumeTextBox" VerticalAlignment="Top" Width="120" Margin="146,103,90,0" Height="22"/>
+                <TextBlock Text="Volume" Height="22" Margin="168,81,68,241"/>
+                <Button Name="SaveDataButton" Content="Save changes" HorizontalAlignment="Left" VerticalAlignment="Top" Height="34" Width="96" Click="SaveDataButton_Click" Margin="283,300,0,0"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
