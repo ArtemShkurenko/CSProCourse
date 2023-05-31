@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logistics.DAL.Tests", "Logi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logistics.Wpf", "Logistic.WPF\Logistics.Wpf.csproj", "{80C0C105-D650-4727-A7FB-17BB10AFCA49}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logistic.WebAPI", "Logistic.WebAPI\Logistic.WebAPI.csproj", "{DA771DAE-242A-4FFE-A31B-AB8D99DE863F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{80C0C105-D650-4727-A7FB-17BB10AFCA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C0C105-D650-4727-A7FB-17BB10AFCA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C0C105-D650-4727-A7FB-17BB10AFCA49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA771DAE-242A-4FFE-A31B-AB8D99DE863F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA771DAE-242A-4FFE-A31B-AB8D99DE863F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA771DAE-242A-4FFE-A31B-AB8D99DE863F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA771DAE-242A-4FFE-A31B-AB8D99DE863F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{7C9ACF7E-1549-4953-9F82-BC0AA2AD7F06} = {17CFFB6E-6766-4D4E-B4E4-16902A954378}
 		{BF271566-A653-402E-AD1A-04EB6F00C9B9} = {17CFFB6E-6766-4D4E-B4E4-16902A954378}
 		{80C0C105-D650-4727-A7FB-17BB10AFCA49} = {C7095CFE-B190-4FE9-A655-2434BD220AA8}
+		{DA771DAE-242A-4FFE-A31B-AB8D99DE863F} = {C7095CFE-B190-4FE9-A655-2434BD220AA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3BF73CF-F08F-4D0F-AB99-5D92C7DBC90A}
