@@ -10,6 +10,7 @@ namespace Logistic.WebAPI.Controllers
     {
         private readonly ReportService<Vehicle> _reportService;
         private readonly VehicleService _vehicleService;
+        
         public ReportController(ReportService<Vehicle> reportService, VehicleService vehicleService)
         {
             _reportService = reportService;
@@ -17,11 +18,11 @@ namespace Logistic.WebAPI.Controllers
         }
        
         [HttpPost("{reportType}/CreateReport")]
-        public IActionResult CreateReport(ReportType reportType, IEnumerable<Vehicle> entities)
+        public IActionResult CreateReport(ReportType reportType)
         {
             try
             {
-                entities = _vehicleService.GetAll();
+                IEnumerable<Vehicle> entities = _vehicleService.GetAll();
                 _reportService.CreateReport(reportType, entities);
                 return Ok();
             }

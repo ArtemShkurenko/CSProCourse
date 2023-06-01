@@ -12,11 +12,9 @@ namespace Logistic.WebAPI.Controllers
     {
         private readonly WarehouseService _warehouseService;
         private readonly IMapper _mapperWh;
-        private readonly ILogger<WarehouseService> _logger;
         
-        public WarehouseController(ILogger<WarehouseController> logger, WarehouseService warehouseService, IMapper mapperWh)
+        public WarehouseController(WarehouseService warehouseService, IMapper mapperWh)
         {
-            _logger = (ILogger<WarehouseService>?)logger;
             _warehouseService = warehouseService;
             _mapperWh = mapperWh;
         }
@@ -51,15 +49,15 @@ namespace Logistic.WebAPI.Controllers
         [HttpPut("{Id},Update")]
         public IActionResult Update(int Id, Warehouse warehouseModel)
         {
-            try
+            var updatedWarehouse = _warehouseService.GetById(Id);
+            if (updatedWarehouse != null)
             {
-                var updatedWarehouse = _warehouseService.GetById(Id);
+                
                 updatedWarehouse.Name = warehouseModel.Name;
-
                 _warehouseService.Update(updatedWarehouse);
                 return Accepted();
             }
-            catch (Exception ex)
+            else 
             {
                 return NotFound();
             }

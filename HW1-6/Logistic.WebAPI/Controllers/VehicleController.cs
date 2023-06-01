@@ -14,11 +14,9 @@ namespace Logistic.WebAPI.Controllers
     public class VehicleController : ControllerBase
     {
         public readonly VehicleService _vehicleService;
-        private readonly ILogger<VehicleController> _logger;
         private readonly IMapper _mapper;
-        public VehicleController(ILogger<VehicleController> logger, IMapper mapper, VehicleService vehicleservice)
+        public VehicleController(IMapper mapper, VehicleService vehicleservice)
         {
-            _logger = logger;
             _vehicleService = vehicleservice;
             _mapper = mapper;
         }
@@ -53,16 +51,16 @@ namespace Logistic.WebAPI.Controllers
         [HttpPut("{Id},Update")]
         public IActionResult Update (int Id, VehicleModel vehicleModel)
         {
-            try
+            var updatedVehicle = _vehicleService.GetById(Id);
+            if (updatedVehicle != null)
             {
-                var updatedVehicle = _vehicleService.GetById(Id);
                 updatedVehicle.Name = vehicleModel.Name;
                 updatedVehicle.MaxCargoWeightKg = vehicleModel.MaxCargoWeightKg;
                 updatedVehicle.MaxCargoVolume = vehicleModel.MaxCargoVolume;
                 _vehicleService.Update(updatedVehicle);
                 return Accepted();
             }
-            catch (Exception ex)
+            else
             {
                 return NotFound();
             }
@@ -72,7 +70,6 @@ namespace Logistic.WebAPI.Controllers
         {
             try
             {
-                
                 _vehicleService.LoadCargo(cargo, Id);
                 return Accepted();
             }
@@ -85,8 +82,7 @@ namespace Logistic.WebAPI.Controllers
         public IActionResult UnLoadCargo(Guid cargoId, int vehicleId)
         {
             try
-            {
-               
+            { 
                 _vehicleService.UnloadCargo(cargoId, vehicleId);
                 return Accepted();
             }
